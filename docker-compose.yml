@@ -1,0 +1,92 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - /Users/adrianluna/Code/src:/var/www/html
+    depends_on:
+      - mysql
+      - php
+  mysql:
+    image: mariadb:10.5
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./databases-backup.sql:/docker-entrypoint-initdb.d/databases-backup.sql
+  php:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    volumes:
+      - /Users/adrianluna/Code/src:/var/www/html
+      - /Users/adrianluna/Code/docker/certs:/etc/certs ## uncomment if running on tls
+    depends_on:
+      - valkey
+  # redis:
+  #   build:
+  #     context: .
+  #     dockerfile: redis.dockerfile
+  #   command: [
+  #     '--tls-port 6379',
+  #     '--port 0',
+  #     "--tls-cert-file /etc/certs/redis.crt",
+  #     "--tls-key-file /etc/certs/redis.key",
+  #     "--tls-ca-cert-file /etc/certs/ca.crt"
+  #   ]
+  #   ports:
+  #     - 6379:6379
+  #     - 6378:6378
+  #   volumes:
+  #     - /Users/adrianluna/Code/docker/certs:/etc/certs
+  valkey:
+    build:
+      context: .
+      dockerfile: valkey.dockerfile
+    # command: --port 32769 ## uncomment ro run on high ports
+    # command: [
+    #   "--tls-port 60379",
+    #   "--port 0",
+    #   "--tls-cert-file /etc/certs/server.crt",
+    #   "--tls-key-file /etc/certs/server.key",
+    #   "--tls-ca-cert-file /etc/certs/ca.crt"
+    # ] ## uncomment if running on tls
+    ports:
+      # - 32769:6379 ## uncomment ro run on high ports
+      - 6379:6379
+      - 6378:6378
+    # volumes: ## uncomment if running on sockets also check valkey.dockerfile
+    #   - redis-socket:/run/redis-socket ## uncomment if running on sockets
+    # volumes: ## uncomment if running on tls
+    #   - /Users/adrianluna/Code/docker/certs:/etc/certs ## uncomment if running on tls
+  composer:
+    build:
+      context: .
+      dockerfile: composer.dockerfile
+    volumes:
+      - /Users/adrianluna/Code/src:/var/www/html
+    working_dir: /var/www/html
+  npm:
+    image: node:current-alpine
+    volumes:
+      - /Users/adrianluna/Code/src:/var/www/html
+    entrypoint: ["npm"]
+    working_dir: /var/www/html
+  artisan:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    volumes:
+      - /Users/adrianluna/Code/src:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - mysql
+    entrypoint: ["php"]
+# volumes: ## uncomment if running on sockets
+#   redis-socket: ## uncomment if running on sockets
+#     name: redis_socket ## uncomment if running on sockets

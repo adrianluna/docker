@@ -1,0 +1,6 @@
+FROM composer:2
+
+ENV COMPOSERUSER=aluna
+ENV COMPOSERGROUP=aluna
+
+RUN adduser -g ${COMPOSERGROUP} -s /bin/sh -D ${COMPOSERUSER}

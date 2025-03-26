@@ -1,0 +1,9 @@
+/certs/*.crt
+/certs/*.key
+/certs/*.txt
+/certs/*.dh
+/certs/*.cnf
+/mysql
+dump.rdb
+db.json
+databases-backup.sql

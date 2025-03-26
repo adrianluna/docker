@@ -28,22 +28,28 @@ services:
       - /Users/adrianluna/Code/docker/certs:/etc/certs ## uncomment if running on tls
     depends_on:
       - valkey
+  # keydb:
+  #   build:
+  #     context: .
+  #     dockerfile: keydb.dockerfile
+  #   ports:
+  #     - 6379:6379
   # redis:
   #   build:
   #     context: .
   #     dockerfile: redis.dockerfile
-  #   command: [
-  #     '--tls-port 6379',
-  #     '--port 0',
-  #     "--tls-cert-file /etc/certs/redis.crt",
-  #     "--tls-key-file /etc/certs/redis.key",
-  #     "--tls-ca-cert-file /etc/certs/ca.crt"
-  #   ]
+  #   # command: [
+  #   #   '--tls-port 6379',
+  #   #   '--port 0',
+  #   #   "--tls-cert-file /etc/certs/redis.crt",
+  #   #   "--tls-key-file /etc/certs/redis.key",
+  #   #   "--tls-ca-cert-file /etc/certs/ca.crt"
+  #   # ]
   #   ports:
   #     - 6379:6379
   #     - 6378:6378
-  #   volumes:
-  #     - /Users/adrianluna/Code/docker/certs:/etc/certs
+  #   # volumes:
+  #   #   - /Users/adrianluna/Code/docker/certs:/etc/certs
   valkey:
     build:
       context: .
